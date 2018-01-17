@@ -18,6 +18,25 @@ class OrdinateurManager {
         return $this->listerOrdinateursDepuisCetteRequete($requete);
     }
     
+    public function listerNombreDordinateursParSalle() {
+        $requete = "select salle, count(distinct id) as nb_ordinateurs from ordinateurs group by salle order by salle";
+        $listeNombreOrdinateursParSalle = array();
+        
+        try {
+            $reponse = $this->connexionDB->query($requete);
+            
+            while (($ligneReponse = $reponse->fetch())) {
+                $listeNombreOrdinateursParSalle[$ligneReponse['salle']] = $ligneReponse['nb_ordinateurs'];
+            }
+            
+            $reponse->closeCursor();
+        } catch (PDOException $ex) {
+            echo '<pre>Erreur : ' . $ex.getMessage() . '</pre>';
+        }
+        
+        return $listeNombreOrdinateursParSalle;
+    }
+
     private function listerOrdinateursDepuisCetteRequete($requete) {
         $listeOrdinateurs = array();
         
